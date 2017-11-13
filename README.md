@@ -1,6 +1,6 @@
 ## 简介
 
-这个仓库是根据胡子大哈的《React.js 小书》（）完成的demo练习，仅作为个人练习与记录笔记使用。
+这个仓库是根据胡子大哈的《React.js 小书》完成的demo练习，仅作为个人练习与记录笔记使用。
 
 如果想学习，可以访问 http://huziketang.com/books/react/ 。
 
@@ -86,5 +86,22 @@ render () {
 ```
 #### JSX 元素变量
 
+```
+...
+render () {
+  const isGoodWord = true
+  const goodWord = <strong> is good</strong>
+  const badWord = <span> is not good</span>
+  return (
+    <div>
+      <h1>
+        React 小书
+        {isGoodWord ? goodWord : badWord}
+      </h1>
+    </div>
+  )
+}
+...
+```
 
 
