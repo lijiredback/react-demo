@@ -104,4 +104,33 @@ render () {
 ...
 ```
 
+## demo03（组件的组合、嵌套和组件树）
+
+```
+class Title extends Component {
+  render () {
+    return (
+      <h1>React 小书</h1>
+    )
+  }
+}
+
+class Header extends Component {
+  render () {
+    return (
+      <div>
+        <Title />
+        <Title />
+        <Title />
+      </div>
+    )
+  }
+}
+```
+
+React.js 会在 ```<Title />``` 所在的地方把```Title```组件的```render```方法表示的 JSX 内容渲染出来，也就是说 ```<h1>React 小书</h1>```会显示在相应的位置上。
+
+可复用性强，可以把组件内容封装好，然后灵活地使用在任何组件内。
+
+参照demo03 index.js 的代码，组件树。
 
