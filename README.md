@@ -134,3 +134,64 @@ React.js 会在 ```<Title />``` 所在的地方把```Title```组件的```render`
 
 参照demo03 index.js 的代码，组件树。
 
+## demo04(事件监听)
+
+在 React.js 中监听事件是一件很容易的事，只需要给要监听的元素加上类似于```onClick```、```onKeyDown```这样的属性。
+
+例如：
+```
+class Title extends Component {
+  handleClickOnTitle () {
+    console.log('Click on title.')
+  }
+
+  render () {
+    return (
+      <h1 onClick={this.handleClickOnTitle}>React 小书</h1>
+    )
+  }
+}
+```
+在 React.js 中，不需要手动调用浏览器原生的 ```addEventListener```进行事件监听，因为 React.js 已经帮助我们封装好了一些列的 ```on*```属性。
+
+注意，如果没有特殊处理的话，**这些```on*```的事件监听只能在普通的 HTML 标签上使用，而不能用在组件标签上**。
+
+#### event对象
+
+和普通浏览器一样，事件监听函数会被自动传入一个 ```event``` 对象，这个对象和普通浏览器的 ```event对象```所包含的属性和方法都基本一致。
+
+#### 关于事件中的 this
+
+一般在某个类的实例的方法中的 ```this``` 指向的都是这个实例本身。但是你在上面的 ```handleOnClickTitle``` 中把 ```this``` 打印出来，会发现 ```this``` 是 ```null``` 或 ```undefined``` 。
+
+```
+...
+  handleClickOnTitle (e) {
+    console.log(this) // => null or undefined
+  }
+...
+```
+
+这是因为 React.js 调用你所传给它的方法的时候，并不是通过对象方法的调用模式（```this.handleOnClickTitle```），而是直接通过函数调用（```handleOnclickTitle```）。
+
+所以，事件监听函数内并不能通过```this```获取到实例。
+
+如果想要在事件监听函数内使用当前实例，需要手动地将实例方法 ```bind```到当前实例，再传入给 React.js 。
+```
+class Title extends Component {
+  handleClickOnTitle (e) {
+    console.log(this)
+  }
+
+  render () {
+    return (
+      <h1 onClick={this.handleClickOnTitle.bind(this)}>React 小书</h1>
+    )
+  }
+}
+```
+
+#### 总结
+1. 为 React.js 的组件添加事件监听是很简单的事，只需要通过 ```on*```即可。
+2. React.js 会给每个事件监听传入一个 ```event``` 对象。
+3. React.js 的事件监听方法，需要手动 ```bind``` 到当前实例，才能在监听函数内部使用 ```this```。
