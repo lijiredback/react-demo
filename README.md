@@ -10,7 +10,7 @@
 
 ```ReactDOM``` 只有一个作用：把 React 组件渲染到页面上。
 
-#### JSX 原理
+### JSX 原理
 
 DOM渲染
 
@@ -46,7 +46,7 @@ DOM渲染
 
 所以，**所谓的 JSX 其实就是 JavaScript 对象**。
 
-+ 总结
+### 总结
 
 1. JSX 是 JavaScript 语言的一个语法扩展，长得像 HTML，但并不是 HTML。
 2. React.js 可以用 JSX 来描述你的组件长什么样。
@@ -59,7 +59,7 @@ DOM渲染
 
 一个组件类，必须要实现一个 ```render``` 方法。这个```render```方法必须返回一个 JSX 元素。
 
-#### 表达式插入
+### 表达式插入
 
 表达式用 {} 包裹。
 
@@ -67,7 +67,7 @@ DOM渲染
 
 可以放在标签内部，也可以放在标签的属性上。
 
-#### 条件返回
+### 条件返回
 ```
 render () {
   const isGoodWord = true
@@ -84,7 +84,7 @@ render () {
   )
 }
 ```
-#### JSX 元素变量
+### JSX 元素变量
 
 ```
 ...
@@ -156,11 +156,11 @@ class Title extends Component {
 
 注意，如果没有特殊处理的话，**这些```on*```的事件监听只能在普通的 HTML 标签上使用，而不能用在组件标签上**。
 
-#### event对象
+### event对象
 
 和普通浏览器一样，事件监听函数会被自动传入一个 ```event``` 对象，这个对象和普通浏览器的 ```event对象```所包含的属性和方法都基本一致。
 
-#### 关于事件中的 this
+### 关于事件中的 this
 
 一般在某个类的实例的方法中的 ```this``` 指向的都是这个实例本身。但是你在上面的 ```handleOnClickTitle``` 中把 ```this``` 打印出来，会发现 ```this``` 是 ```null``` 或 ```undefined``` 。
 
@@ -191,7 +191,67 @@ class Title extends Component {
 }
 ```
 
-#### 总结
+### 总结
 1. 为 React.js 的组件添加事件监听是很简单的事，只需要通过 ```on*```即可。
 2. React.js 会给每个事件监听传入一个 ```event``` 对象。
 3. React.js 的事件监听方法，需要手动 ```bind``` 到当前实例，才能在监听函数内部使用 ```this```。
+
+## demo05(组件的 state 和 setState)
+
+### state
+一个组件可以拥有自己的状态，就像一个点赞按钮，可以有"已点赞"和"未点赞"两种状态，并且可以在这两种状态之间自由切换。
+
+```
+...
+class LikeButton extends Component {
+  constructor () {
+    super()
+    this.state = { isLiked: false }
+  }
+
+  handleClickOnLikeButton () {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+
+  render () {
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked ? '取消' : '点赞'} 👍
+      </button>
+    )
+  }
+}
+...
+```
+
+```isliked```存放在```state```对象中，这个对象在构造函数里初始化。这个组件的```render```函数内，会根据组件的```state```中的```isLiked```的不同显示"取消"或"点赞"。
+
+### setState 接收对象参数
+
+在 ```handleOnClickLikeButton```事件监听函数中，调用了 ```setState```函数，每次点击都会更新```isLiked```属性为```!isLiked```。
+
+```setState```方法由父类 ```Component```提供。**当我们调用这个函数的时候，React.js 会更新组件的状态```state```，并且重新调用```render```方法，然后再把```render```方法所渲染的内容显示到页面上**。
+
+更新时，不能直接用 ```this.state = xxx``，一定要用 ```setState```方法，它接收一个**对象或者函数作为参数**。
+
+### 注意
+当调用```setState```方法时，React.js 并不会马上修改```state```。而是把这个对象放到一个更新队列里，稍后才会从队列中把新的状态提取出来，合并到```state```当中。
+
+```
+...
+  handleClickOnLikeButton () {
+    console.log(this.state.isLiked)
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+    console.log(this.state.isLiked)
+  }
+...
+```
+
+两次打印都是```false```，这并不是什么bug，只是这个排队机制搞的。
+
+所以，如果你想在```setState```之后使用新的```state```进行运算的话，就只能使用第二种传递参数的方式，把一个函数作为参数，传递给```setState```。
+
