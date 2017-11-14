@@ -255,3 +255,137 @@ class LikeButton extends Component {
 
 所以，如果你想在```setState```之后使用新的```state```进行运算的话，就只能使用第二种传递参数的方式，把一个函数作为参数，传递给```setState```。
 
+## demo06(配置组件的props)
+
+组件是相互独立的，可复用的单元，一个组件可能在不同的地方被用到。但是在不同的场景下，对这个组件的需求可能会有所不同。这就需要我们的组件具有一定的"可配置性"。
+
+React.js 的```props```就可以帮助我们达到这个效果。每个组件都可以接收一个```props``` 参数，它是一个对象，包含了所有你对这个组件的配置。
+
+```
+class LikeButton extends Component {
+  constructor () {
+    super()
+    this.state = { isLiked: false }
+  }
+
+  handleClickOnLikeButton () {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+
+  render () {
+    const likedText = this.props.likedText || '取消'
+    const unlikedText = this.props.unlikedText || '点赞'
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked ? likedText : unlikedText} 👍
+      </button>
+    )
+  }
+}
+```
+
+在组件内部是通过```this.props```的方式获取到组件的参数的。
+
+传入```props```的方式也很简单。就像你在用普通的 HTML 标签的属性一样，可以把参数放在表示组件的标签上，组件内部就可以通过```this.props```来访问到这些配置参数了。
+```
+class Index extends Component {
+  render () {
+    return (
+      <div>
+        <LikeButton likedText='已赞' unlikedText='赞' />
+      </div>
+    )
+  }
+}
+```
+
+### 默认配置 defaultProps
+```
+class LikeButton extends Component {
+  static defaultProps = {
+    likedText: '取消',
+    unlikedText: '点赞'
+  }
+
+  constructor () {
+    super()
+    this.state = { isLiked: false }
+  }
+
+  handleClickOnLikeButton () {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+
+  render () {
+    return (
+      <button onClick={this.handleClickOnLikeButton.bind(this)}>
+        {this.state.isLiked
+          ? this.props.likedText
+          : this.props.unlikedText} 👍
+      </button>
+    )
+  }
+}
+```
+
+### props 不可变
+```props```一旦传入进来就不能改变。修改上面的例子：
+```
+...
+  handleClickOnLikeButton () {
+    this.props.likedText = '取消'
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+...
+```
+当点击按钮时，控制台会报错。
+
+你不能改变一个组件被渲染的时候传进来的```props```。
+
+但这并不意味着由 ```props``` 决定的显示形态不能被修改。组件的使用者可以**主动地通过重新渲染的方式**把新的```props```传入组件当中。
+
+```
+class Index extends Component {
+  constructor () {
+    super()
+    this.state = {
+      likedText: '已赞',
+      unlikedText: '赞'
+    }
+  }
+
+  handleClickOnChange () {
+    this.setState({
+      likedText: '取消',
+      unlikedText: '点赞'
+    })
+  }
+
+  render () {
+    return (
+      <div>
+        <LikeButton
+          likedText={this.state.likedText}
+          unlikedText={this.state.unlikedText} />
+        <div>
+          <button onClick={this.handleClickOnChange.bind(this)}>
+            修改 wordings
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
+```
+
+### 总结
+1. 为了使得组件的可定制性更强，在使用组件的时候，可以在标签上加属性来传入配置参数。
+2. 组件可以在内部通过 ```this.props```获取到配置参数。组件可以通过```props```的不同，显示不同的形态。
+3. 可以通过给组件添加属性 ```defaultProps``` 来配置默认参数。
+4. ```props```一旦传入，不可以在组件内部对它进行修改。但是可以通过父组件主动重新渲染的方式传入新的 ```props```，达到更新的效果。
