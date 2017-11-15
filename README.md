@@ -389,3 +389,46 @@ class Index extends Component {
 2. 组件可以在内部通过 ```this.props```获取到配置参数。组件可以通过```props```的不同，显示不同的形态。
 3. 可以通过给组件添加属性 ```defaultProps``` 来配置默认参数。
 4. ```props```一旦传入，不可以在组件内部对它进行修改。但是可以通过父组件主动重新渲染的方式传入新的 ```props```，达到更新的效果。
+
+## demo07(state vs props)
+
+```state```的主要作用是用于组件保存、控制、修改自己的可变状态。```state```在组件内部初始化，可以被组件自身修改，而外部不能访问也不能修改。
+
+```props```的主要作用是让使用该组件的父组件可以传入可配置的参数。它是外部传来的参数，组件内部无法控制也无法修改。除非外部组件主动传入新的```props```。
+
+**```state```是让组件控制自己的状态，```props```是让外部对组件自己进行配置**。
+
+简单的原则：尽量少使用```state```，多使用```props```。因为状态会带来管理的复杂性。
+
+同时，React.js 也非常鼓励无状态组件。比如一个组件经常这样写：
+```
+class HelloWorld extends Component {
+    constructor() {
+        super();
+    }
+
+    sayHi() {
+        alert('Hello World');
+    }
+
+    render() {
+        return(
+            <div onClick={this.sayHi.bind(this)}></div>
+        )
+    }
+}
+```
+
+React.js 提供了函数式组件的编写方式（一种不能使用```state```的组件）
+```
+    const HelloWorld = (props) => {
+        const sayHi = (event) => {
+            alert('Hello World');
+        }
+        return (
+            <div onClick={sayHi}>Hello World</div>
+        )
+    }
+```
+
+函数式组件只能接收```props```而无法像类组件一样可以在```constructor```里初始化```state```
