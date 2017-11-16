@@ -432,3 +432,109 @@ React.js 提供了函数式组件的编写方式（一种不能使用```state```
 ```
 
 函数式组件只能接收```props```而无法像类组件一样可以在```constructor```里初始化```state```
+
+## demo08(渲染列表数据)
+
+### 渲染存放 JSX 元素的数组
+在 ```{}``` 中可以存放任意数据类型的数据，所以尝试在```{}```中插入一个数组。
+
+```
+...
+
+class Index extends Component {
+  render () {
+    return (
+      <div>
+        {[
+          <span>React.js </span>,
+          <span>is </span>,
+          <span>good</span>
+        ]}
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Index />,
+  document.getElementById('root')
+)
+```
+
+此时，React.js 会把数组中的每一个元素，一一罗列下来，渲染在页面上。
+
+### 使用 map 渲染列表数据
+
+```
+const users = [
+  { username: 'Jerry', age: 21, gender: 'male' },
+  { username: 'Tomy', age: 22, gender: 'male' },
+  { username: 'Lily', age: 19, gender: 'female' },
+  { username: 'Lucy', age: 20, gender: 'female' }
+];
+
+class Index extends Component {
+  render () {
+    return (
+      <div>
+        {users.map((user) => {
+          return (
+            <div>
+              <div>姓名：{user.username}</div>
+              <div>年龄：{user.age}</div>
+              <div>性别：{user.gender}</div>
+              <hr />
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+}
+```
+
+一般来说，在 React.js 中处理列表就是用```map```来处理、渲染的。
+
+现在进一步把渲染一个单独用户的结构抽离出来，作为一个组件，优化代码如下：
+```
+const users = [
+  { username: 'Jerry', age: 21, gender: 'male' },
+  { username: 'Tomy', age: 22, gender: 'male' },
+  { username: 'Lily', age: 19, gender: 'female' },
+  { username: 'Lucy', age: 20, gender: 'female' }
+]
+
+class User extends Component {
+  render () {
+    const { user } = this.props
+    return (
+      <div>
+        <div>姓名：{user.username}</div>
+        <div>年龄：{user.age}</div>
+        <div>性别：{user.gender}</div>
+        <hr />
+      </div>
+    )
+  }
+}
+
+class Index extends Component {
+  render () {
+    return (
+      <div>
+        {users.map((user) => <User user={user} />)}
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Index />,
+  document.getElementById('root')
+)
+```
+
+这里把负责展示用户数据的 JSX 结构抽离成一个组件 ```user``` ，并且通过```props```把```user```数据作为组件的配置参数传了进去；这样改写```Index```就非常清晰了，看一眼就知道负责渲染```users```列表的就是```User```组件了。
+
+### key
+**对于用表达式套数组罗列到页面上的元素，要为每个元素加上```key```属性，这个```key```属性必须是每个元素的唯一的标识**。一般来说，```key```的值可以直接用后台数据返回的```id```，因为后台的```id```都是唯一的。
